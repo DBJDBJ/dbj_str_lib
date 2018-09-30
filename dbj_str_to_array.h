@@ -79,7 +79,6 @@ static dbj_array  * dbj_str_gaps_locations(char text_[], char boundary_[])
 		++result;
 	}
 	dbj_array * p = 0;
-	//  marks_pos -- how many gaps are found
 	dbj_array_make (p, marks, gap_count, int);
 	// we have made a structure that holds size of int
 	// count of array of ints and void * to the array of ints
@@ -99,7 +98,7 @@ unsigned int dbj_str_to_array(
 	if (NULL == strchr(boundary_, 0)) { return errno = EINVAL; }
 	// boundary not found ?
 	if (NULL == strstr(text_, boundary_)) { return errno = EINVAL; }
-	// is boundary larger or equal to the text_ ?
+	// is boundary larger or equal v.s. the text_ ?
 	if (strlen(boundary_) >= strlen(text_)) { return errno = EINVAL; ; }
 
 	dbj_array * gaps_ = dbj_str_gaps_locations(text_, boundary_);
@@ -120,12 +119,15 @@ unsigned int dbj_str_to_array(
 		to_pos = 0 ;
 	const int gap_size 
 		= strlen(boundary_);
+	int word_len = 0;
+
 	for (j = 0; j < dbj_array_count( gaps_ ); ++j)
 	{
 		to_pos = locations_[j];
-		if ((to_pos - from_pos) > 0) 
-		{
-			(rezult)[j] = dbj_strndup(text_, to_pos - from_pos);
+		word_len = to_pos - from_pos;
+		if (word_len > 0)
+		{ 
+			(rezult)[j] = dbj_strndup(text_[from_pos], word_len);
 			(*count) += 1;
 		}
 		from_pos = to_pos + gap_size;
@@ -148,7 +150,7 @@ static void dbj_test_str_to_array() {
 	char * new_text_ = dbj_str_remove_all(text_, " ");
 
 	int failure = dbj_str_to_array
-	(& rezult_size, rezult, text_, "one");
+	(& rezult_size, rezult, new_text_, "one");
 
 	if (failure) {
 		char * err_mesaage_ = strerror(failure);

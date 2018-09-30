@@ -162,17 +162,17 @@ always null terminating the copied string.
 */
 static char * dbj_strndup(const char *s, size_t n)
 {
-	char *result = 0;
-	size_t len = strlen(s);
+	char *result = (char *)dbj_calloc(char *, n );
+	if (result == NULL) { errno = ENOMEM; return NULL; }  // No memory
 
-	if (n < len)
-		len = n;
-
-	result = dbj_malloc(char *, len + 1);
-	if (result == NULL) {errno = ENOMEM;return NULL;}  // No memory
-
-	result[len] = '\0';
-	return (char *)memcpy(result, s, len);
+	int j = 0;
+	for (j = 0; j < n; j++)
+	{
+		result[j] = s[j];
+		if (result[j] == 0) break;
+	}
+		result[j] = '\0';
+	return result;
 }
 
 void dump_charr_arr(size_t size_, char *str)
