@@ -132,8 +132,9 @@
     <ClCompile Include="dbj_str_remove_from_to.c">
       <FileType>CppCode</FileType>
     </ClCompile>
+    <ClInclude Include="dbj_matrix.h" />
     <ClInclude Include="dbj_str_sll.h" />
-    <ClCompile Include="dbj_str_to_array.c">
+    <ClCompile Include="dbj_str_sawmill.c">
       <FileType>CppCode</FileType>
     </ClCompile>
   </ItemGroup>

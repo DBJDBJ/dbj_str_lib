@@ -24,8 +24,8 @@
     <ClInclude Include="dbj_str_remove.c">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="dbj_str_to_array.c">
-      <Filter>Source Files</Filter>
+    <ClInclude Include="dbj_matrix.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -37,6 +37,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="dbj_str_remove_from_to.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="dbj_str_sawmill.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

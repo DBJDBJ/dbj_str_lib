@@ -31,6 +31,47 @@ char * dbj_str_remove_all ( const char * str_, const char * chars_to_remove_ )
 	return dbj_strndup(vla_buff_, buff_p - vla_buff_);
 }
 
+/*
+return 0 on OK, errno on error
+after new_front and new_back are moved if prefix/sufix is found
+*/
+int dbj_str_remove_prefix_suffix( 
+	char ** new_front ,
+	char ** new_back  ,
+	const char text_[],
+	const char boundary_[]
+) {
+	assert(text_);
+	assert(boundary_);
+	if (text_[0] == '\0')  return errno = EINVAL;
+	if (boundary_[0] == '\0')  return errno = EINVAL;
+
+	const size_t text_len_ = strlen(text_);
+	const size_t boundary_len_ = strlen(boundary_);
+
+	if (boundary_len_ >= text_len_ ) return errno = EINVAL;
+
+	 * new_front  = (char *)&text_[0];
+	 * new_back = (char *)&text_[text_len_-1];
+
+	// is boundary prefix to the input?
+	if ( 0 == dbj_substr_pos(text_, boundary_)) {
+		// it is
+		*new_front = (char *)&text_[boundary_len_];
+	}
+	// is boundary suffix to the input?
+	{
+		size_t presumed_suffix_location = text_len_ - boundary_len_ ;
+		char * presumed_suffix = (char*)&text_[presumed_suffix_location];
+		if (0 == dbj_substr_pos(presumed_suffix, boundary_))
+		{
+			// boundary found to be suffix
+			*new_back = (char *)&text_[presumed_suffix_location];
+		}
+	}
+	return 0;
+}
+
 void dbj_test_str_remove() 
 {
 char * specimen_ = "    ABRA    KA     DABRA    ";

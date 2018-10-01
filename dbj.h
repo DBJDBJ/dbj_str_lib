@@ -38,17 +38,12 @@
 #define dbj_calloc(type, count) calloc(count, sizeof(type))
 /*
 advanced DBJ lesson :)
-	int *p1 = dbj_array_alloc(4, int);    // allocate and zero out an array of 4 int
-	int *p2 = dbj_array_alloc(1, int[4]); // same, naming the array type directly
-	int *p3 = dbj_array_alloc(4, *p3);    // same, without repeating the type name
+	int *p1 = dbj_calloc(4, int);    // allocate and zero out an array of 4 int
+	int *p2 = dbj_calloc(1, int[4]); // same, naming the array type directly
+	int *p3 = dbj_calloc(4, *p3);    // same, without repeating the type name
 */
 
-/* 
-    NOTE! The result is void ** 
-	      to free use single free() 
-*/
-#define dbj_matrix_alloc(type, rows, cols) \
-    calloc(sizeof(type *) * rows + sizeof(type) * rows * cols, 1)
+
 /*
 Usage :
 int ** a = dbj_matrix_alloc(int, 5, 5);
@@ -111,43 +106,7 @@ above is horrible and necessary in C since we can not pass the type
 to the functions in C, the macro is the only way
 */
 
-///  DBJ MATRIX ----------------------------------------------
-// keep matrix data and its rows/cols count together
-typedef struct dbj_matrix_struct {
-	int     rows_;
-	int     cols_;
-	void ** data_;
-} dbj_matrix ;
 
-// free in a single free() call
-static void ** dbj_matrix_data_allocate( unsigned int rows, unsigned int cols ) {
-	return dbj_matrix_alloc(void *, rows, cols);
-}
-static void	   dbj_matrix_free (dbj_matrix * p) { 
-	assert(p);
-	if (p) {
-		assert(p->data_);
-		if ( p->data_)	free(p->data_); 
-		  free(p); p = 0;
-	}
-}
-static dbj_matrix * dbj_matrix_make(void *source, unsigned int rows, unsigned int cols) {
-	assert(source);
-	dbj_matrix * p = dbj_malloc(dbj_matrix, 1);
-	if (p){
-		p->rows_ = rows;
-		p->cols_ = cols;
-		p->data_ = dbj_matrix_data_allocate(rows, cols);
-		if (!p->data_) return NULL; // errno == ENOMEM
-	}
-	else {
-		errno = ENOMEM; return NULL; // no memory
-	}
-	return p;
-}
-#define dbj_matrix_cast(p_, type_) (type_**)p_->data_
-#define dbj_matrix_rows(p_) p_->rows_
-#define dbj_matrix_cols(p_) p_->cols_
 
 /*
 strdup and strndup are defined in POSIX compliant systems as :
@@ -166,30 +125,63 @@ static char * dbj_strdup(const char *s)
 /*
 The strndup() function copies at most len characters from the string str
 always null terminating the copied string.
+input does not have to be zero terminated
 */
-static char * dbj_strndup(const char *s, size_t n)
+static char * dbj_strndup(const char str_[], const size_t n)
 {
+	assert(str_);
 	char *result = (char *)dbj_calloc(char *, n + 1);
 	if (result == NULL) { errno = ENOMEM; return NULL; }  // No memory
-
-	size_t j = 0;
-	for (j = 0; j < n; j++)
-	{
-		result[j] = s[j];
-		if (result[j] == 0) break;
-	}
-		result[j] = '\0';
+		memmove( result, str_, n );
+			result[n] = '\0';
 	return result;
 }
 
-static void dbj_dump_charr_arr(size_t size_, char *str)
+/*
+return the index of the substring found or -1
+*/
+static int dbj_substr_pos( const char str_ [], const char sub_ []) {
+	char* pos = strstr(str_, sub_);
+	return (pos ? pos - str_ : -1 );
+}
+
+// is boundary prefix to the input?
+static bool is_dbj_str_prefix(const char str_[], const char pfx_[]) {
+	return (0 == dbj_substr_pos(str_, pfx_));
+}
+// is boundary prefix to the input?
+static bool is_dbj_str_suffix(const char str_[], const char sfx_[]) 
 {
-	// print the codes first
-	printf("[");
+	assert(str_);
+	assert(sfx_);
+
+	size_t str_len_ = strlen(str_) ;
+	size_t pfx_len_ = strlen(sfx_) ;
+
+	assert(str_len_);
+	assert(pfx_len_);
+
+	size_t presumed_suffix_location = str_len_ - pfx_len_;
+	char * presumed_suffix = (char*)&str_[presumed_suffix_location];
+	if (0 == dbj_substr_pos(presumed_suffix, sfx_))
+	{
+		// boundary found to be suffix
+		return true;
+	}
+	return false;
+}
+
+static void dbj_dump_charr_arr(size_t size_, char *str, bool also_binary )
+{
 	char *p = str;
-	for (size_t n = 0; n < size_ ; ++n)	{ printf("%2.2x ", *p);	++p;}
+	if (also_binary) {
+		// print the codes first
+		printf("[");
+		for (size_t n = 0; n < size_; ++n) { printf("%2.2x ", *p);	++p; }
+		printf("], ");
+	}
     // print the chars second
-	printf("]\t\"");
+	printf("\"");
 	p = str;
 	for (size_t n = 0; n < size_ ; ++n)	{ printf("%c", *p ? *p : ' ');	++p; }
 	printf("\"");
@@ -217,14 +209,26 @@ extern void dbj_test_str_remove();
 
 extern char * dbj_str_remove_from_to(char str[], int slice_from, int slice_to);
 extern void test_dbj_str_remove_from_to();
-
-extern unsigned int dbj_str_to_array(
-	int  *  count,		//--count of the rezulting array of strings
-	char ** rezult,		//--rezulting array of strings
-	char    text_[],	//--input text
-	char    boundary_[]	//--what to cut out
+/*
+return 0 on OK, errno on error
+after new_front and new_back are moved if prefix/sufix is found
+*/
+extern int dbj_str_remove_prefix_suffix(
+	char ** new_front,
+	char ** new_back,
+	const char text_[],
+	const char boundary_[]
 );
-extern void dbj_test_str_to_array();
+
+/*
+Return count of the rezulting array of strings
+*/
+extern unsigned int dbj_str_sawmill(
+	char		  * rezult [],		//--rezulting array of strings
+	const char    text_[],	//--input text
+	const char    boundary_[]	//--what to cut out
+);
+extern void test_dbj_str_sawmill();
 
 /// <summary>
 ///  EOF

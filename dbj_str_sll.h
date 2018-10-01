@@ -156,7 +156,7 @@ static bool dbj_sll_node_dump_visitor(dbj_sll_node * node_) {
 
 	printf("\n\nKey: %ld", node_->key);
 	printf("\nStr: ");
-	dbj_dump_charr_arr(strlen(node_->data), node_->data);
+	dbj_dump_charr_arr(strlen(node_->data), node_->data, false);
 	printf("\nNext: %p", node_->next);
 	// return false as a signal NOT to stop
 	return false;
