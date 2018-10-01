@@ -182,10 +182,9 @@ extern const char large_text[];
 void test_dbj_str_sawmill()
 {
 	char * rezult[] = { 0 };
-	char * text_ = (char *)large_text, // "one two one three one four one",
-		*boundary = "one";
+	const  char * text_ = "one two one three one four one",	*boundary = "one";
 
-	int rezult_size = dbj_str_sawmill( rezult, text_, boundary);
+	int rezult_size = dbj_str_sawmill( rezult, large_text, boundary);
 	if (errno) {
 		printf("\n\ndbj str sawmill error message:%s\n", strerror(errno));
 	}
@@ -205,31 +204,19 @@ void test_dbj_str_sawmill()
 static const char large_text[] = {
 "Spaces have been removed from the input str before calling."
 "Thus the input :"
-""
 "str == 'onetwoonethreeonefour'"
 "brk == 'one'"
-""
 "The desired output is the list : {'two', 'three', 'four'}"
-""
 "Algorithm Description"
-""
 "Core of the processing is the(internal) function next_element()"
-""
 "char * next_element(char ** /*str*/, char * /*brk*/);"
-""
 "Return is next element obtained"
 "Processing stops when the first argument points to NULL."
-""
 "Given the input as above next_element(), behaves like this"
 "(without all arg's repeated etc...):"
-""
 "	char * next_element('onetwoonethreeonefour')-- > str == 'twoonethreeonefour', returns NULL"
-""
 "	char * next_element('twoonethreeonefour')-- > str == 'threeonefour', returns 'two'"
-""
 "	char * next_element('threeonefour')-- > str == 'four', returns 'three'"
-""
 "	char * next_element('four')-- > str == 0, returns 'four'"
-""
 "	Processing stops"
 };
