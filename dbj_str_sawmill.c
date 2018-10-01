@@ -33,6 +33,27 @@ On error:
 
 */
 
+static void rekurzor(
+	dbj_sll_node * sll_head,
+	const char text_[], 
+	const char boundary_[],
+	const size_t gap_size
+) 
+{
+	if (!text_) return;
+	int gap =  dbj_substr_pos(text_, boundary_);
+	if (-1 == gap) {
+		// the last chunk
+		dbj_sll_append(sll_head, text_);
+		// chunk = dbj_strdup(text_);
+		return;
+	}
+		char * chunk = dbj_strndup(text_ , gap );
+		dbj_sll_append(sll_head,chunk);
+		free(chunk);
+		rekurzor(sll_head, &(text_)[gap + gap_size], boundary_, gap_size);
+}
+
 /*
 return array of indexes, one for each boundary found
 this are locations marking the beginning of gaps
@@ -138,8 +159,13 @@ unsigned int dbj_str_sawmill(
 	if (is_dbj_str_suffix(sawmill_text_, boundary_)) { errno = EINVAL; goto safe_exit; }
 #endif
 
+	// do the fuck all, in one go
+	rekurzor(dbj_sll_tls_head(), sawmill_text_, boundary_, strlen(boundary_));
+	// the global sll is the result
+	goto safe_exit;
+
 	// find and return locations of boundaries
-	gaps_ = dbj_str_gaps_locations(text_, boundary_);
+	gaps_ = dbj_str_gaps_locations(sawmill_text_, boundary_);
 	// any system failure or are there any gaps located?
 	if ( (! gaps_) || (gaps_->count_ < 1)) { errno = EINVAL; goto safe_exit; }
 
@@ -171,9 +197,15 @@ unsigned int dbj_str_sawmill(
 	return rezult_count;
 }
 
-static void dbj_str_sawmill_release_rezult( char ** rezult ) {
-	if (*rezult) {
-		free(*rezult); *rezult = 0;
+static void dbj_str_sawmill_release_rezult( size_t count, char * rezult []) {
+	if (rezult) {
+		for (size_t n = 0; n < count; ++n) {
+			if (rezult[n]) {
+				free(rezult[n]); rezult[n] = 0;
+			}
+		}
+		// free(rezult);
+		rezult = 0;
 	}
 }
 
@@ -181,7 +213,7 @@ extern const char large_text[];
 
 void test_dbj_str_sawmill()
 {
-	char * rezult[] = { 0 };
+	char ** rezult = (char **)malloc( sizeof(char **));
 	const  char * text_ = "one two one three one four one",	*boundary = "one";
 
 	int rezult_size = dbj_str_sawmill( rezult, large_text, boundary);
@@ -189,6 +221,13 @@ void test_dbj_str_sawmill()
 		printf("\n\ndbj str sawmill error message:%s\n", strerror(errno));
 	}
 	else {
+		printf("\nDBJ SLL dump after dbj_str_sawmill()");
+		dbj_sll_foreach(dbj_sll_tls_head(), dbj_sll_node_dump_visitor);
+		printf("\n");
+		dbj_sll_erase(dbj_sll_tls_head());
+
+		return;
+
 		// print the result
 		printf("\n\ndbj str sawmill rezulted in %d strings\n", rezult_size);
 		for (int j = 0; j < rezult_size ; ++j) {
@@ -198,7 +237,7 @@ void test_dbj_str_sawmill()
 		}
 	}
 
-	dbj_str_sawmill_release_rezult(rezult);
+	dbj_str_sawmill_release_rezult(rezult_size,rezult);
 }
 
 static const char large_text[] = {

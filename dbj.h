@@ -142,7 +142,7 @@ return the index of the substring found or -1
 */
 static int dbj_substr_pos( const char str_ [], const char sub_ []) {
 	char* pos = strstr(str_, sub_);
-	return (pos ? pos - str_ : -1 );
+	return (pos != NULL ? pos - str_ : -1 );
 }
 
 // is boundary prefix to the input?

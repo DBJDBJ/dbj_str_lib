@@ -83,12 +83,12 @@ static void dbj_sll_erase(dbj_sll_node * head_)
 	dbj_sll_node * temp_ = 0;
 	while (current_) {
 		temp_ = current_->next;
-		free(current_->data);
+		if (current_->data) { free(current_->data); current_->data = 0;}
 		free(current_);
 		current_ = temp_;
 	};
 	// make the head aware there are no nodes left
-	dbj_sll_tls_head()->next = 0;
+	head_->next = 0;
 }
 static void dbj_sll_erase_with_head(dbj_sll_node * head_) 
 {
@@ -171,10 +171,12 @@ static dbj_sll_node *
 // sll visitors
 static bool dbj_sll_node_dump_visitor(dbj_sll_node * node_) {
 
-	printf("\n\nKey: %ld", node_->key);
-	printf("\nStr: ");
-	dbj_dump_charr_arr(strlen(node_->data), node_->data, false);
-	printf("\nNext: %p", node_->next);
+	assert(node_);
+	printf("\n\n%p", node_);
+	printf("\n--------------------------------------");
+	printf("\nKey: %ld", node_->key);
+	printf("\nStr: %s", (node_->data ? node_->data : "NULL"));
+	printf("\nNext: %p", (node_->next ? node_->next : 0x0) );
 	// return false as a signal NOT to stop
 	return false;
 }
@@ -213,8 +215,8 @@ static dbj_sll_node * dbj_sll_remove_tail(dbj_sll_node * head_ )
 static void test_dbj_sll()
 {
 	dbj_sll_node * head_ = dbj_sll_make_head();
-	dbj_sll_append(head_,"ONE");
-	dbj_sll_append(head_, "TWO");
+	dbj_sll_append(head_, "ONE"  );
+	dbj_sll_append(head_, "TWO"  );
 	dbj_sll_append(head_, "THREE");
 
 	printf("\nDBJ SLL dump");
@@ -226,7 +228,6 @@ static void test_dbj_sll()
 
 	printf("\nHead after SLL erasure");
 	dbj_sll_node_dump_visitor(head_);
-	dbj_sll_erase(head_);
 	assert(true == is_dbj_sll_empty(head_));
 
 	unsigned long k1 = dbj_sll_append( head_, "Abra")->key;
@@ -235,9 +236,6 @@ static void test_dbj_sll()
 
 	dbj_sll_node * node_ = dbj_sll_find(head_, k2);
 	assert(0 == strcmp(node_->data, "Ka"));
-	assert(true == is_dbj_sll_empty(head_));
-
+	assert(false == is_dbj_sll_empty(head_));
 	dbj_sll_erase_with_head(head_);
-
-	system("pause");
 }
