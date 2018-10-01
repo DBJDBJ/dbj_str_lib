@@ -8,7 +8,7 @@
  * Extracts a selection of string and return a new string or NULL.
  * It supports both negative and positive indexes.
  */
-static char * dbj_str_remove_from_to(char str[], int slice_from, int slice_to)
+ char * dbj_str_remove_from_to(char str[], int slice_from, int slice_to)
 {
     if (str[0] == '\0')
         return NULL;
@@ -75,7 +75,7 @@ dbj_str_test_from_to_driver (char str[], int slice_from, int slice_to)
 
 }
 
-static void test_dbj_str_remove_from_to()
+ void test_dbj_str_remove_from_to()
 {
     char str[] = "abcdefghijkl";
 

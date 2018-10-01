@@ -1,5 +1,6 @@
 #pragma once
 #include "dbj.h"
+#include "dbj_str_sll.h"
 /*
 synopsis: 
 
@@ -127,7 +128,7 @@ unsigned int dbj_str_to_array(
 		word_len = to_pos - from_pos;
 		if (word_len > 0)
 		{ 
-			(rezult)[j] = dbj_strndup(text_[from_pos], word_len);
+			(rezult)[j] = dbj_strndup((const char *)text_[from_pos], word_len);
 			(*count) += 1;
 		}
 		from_pos = to_pos + gap_size;
@@ -142,7 +143,7 @@ static void dbj_str_to_array_release_rezult(int * rezult_size, char * rezult[] )
 	*rezult_size = 0;
 }
 
-static void dbj_test_str_to_array() {
+void dbj_test_str_to_array() {
 	int rezult_size = 0;
 	char * rezult[] = {0};
 	char * text_ = "one two one three one four";
@@ -159,7 +160,7 @@ static void dbj_test_str_to_array() {
 		// print the result
 		for (int j = 0; j < rezult_size; ++j) {
 			if (rezult[j]) 
-				dump_charr_arr(strlen(rezult[j]), rezult[j]) ;
+				dbj_dump_charr_arr(strlen(rezult[j]), rezult[j]) ;
 		}
 	}
 

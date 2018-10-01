@@ -16,6 +16,13 @@
 #include <errno.h>
 #include <assert.h>
 
+// only static and extern variables can use thread local storage
+#ifdef _MSC_VER
+#define dbj_thread_local __declspec(thread) static
+#else
+#define dbj_thread_local __thread static
+#endif
+
 // in C do not cast the result of malloc/calloc etc
 // that will hide important warnings!
 #define dbj_malloc(type, count) malloc( count * sizeof(type))
@@ -150,7 +157,7 @@ char *strndup(const char *str, size_t len);
 */
 static char * dbj_strdup(const char *s) 
 {
-	char *d = dbj_malloc(char *, strlen(s) + 1);   // Space for length plus nul
+	char *d = (char *)dbj_malloc(char *, strlen(s) + 1);   // Space for length plus nul
 	if (d == NULL) { errno = ENOMEM; return NULL; }// No memory
 	strcpy(d, s);                        // Copy the characters
 	return d;                            // Return the new string
@@ -162,10 +169,10 @@ always null terminating the copied string.
 */
 static char * dbj_strndup(const char *s, size_t n)
 {
-	char *result = (char *)dbj_calloc(char *, n );
+	char *result = (char *)dbj_calloc(char *, n + 1);
 	if (result == NULL) { errno = ENOMEM; return NULL; }  // No memory
 
-	int j = 0;
+	size_t j = 0;
 	for (j = 0; j < n; j++)
 	{
 		result[j] = s[j];
@@ -175,21 +182,50 @@ static char * dbj_strndup(const char *s, size_t n)
 	return result;
 }
 
-void dump_charr_arr(size_t size_, char *str)
+static void dbj_dump_charr_arr(size_t size_, char *str)
 {
 	// print the codes first
+	printf("[");
 	char *p = str;
 	for (size_t n = 0; n < size_ ; ++n)	{ printf("%2.2x ", *p);	++p;}
-	printf("\t");
     // print the chars second
+	printf("]\t\"");
 	p = str;
 	for (size_t n = 0; n < size_ ; ++n)	{ printf("%c", *p ? *p : ' ');	++p; }
+	printf("\"");
 
 	// printf("\n", str);
 }
 
-// the rest 
+// the djb2 from: http://www.cse.yorku.ca/~oz/hash.html
+static unsigned long dbj_hash(unsigned char *str)
+{
+	unsigned long hash = 5381;
+	int c;
 
-#include "dbj_str_remove.h"
-#include "dbj_str_remove_from_to.h"
-#include "dbj_str_to_array.h"
+	while (c = *str++)
+		hash = ((hash << 5) + hash) + c; /* hash * 33 + c */
+
+	return hash;
+}
+
+// the rest ///////////////////////////////////////////////////////////
+#include "dbj_str_sll.h"
+
+extern char * dbj_str_remove_all(const char * str_, const char * chars_to_remove_);
+extern void dbj_test_str_remove();
+
+extern char * dbj_str_remove_from_to(char str[], int slice_from, int slice_to);
+extern void test_dbj_str_remove_from_to();
+
+extern unsigned int dbj_str_to_array(
+	int  *  count,		//--count of the rezulting array of strings
+	char ** rezult,		//--rezulting array of strings
+	char    text_[],	//--input text
+	char    boundary_[]	//--what to cut out
+);
+extern void dbj_test_str_to_array();
+
+/// <summary>
+///  EOF
+/// </summary>

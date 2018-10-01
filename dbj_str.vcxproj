@@ -126,13 +126,23 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="dbj.h" />
-    <ClInclude Include="dbj_str_remove.h" />
-    <ClInclude Include="dbj_str_remove_from_to.h" />
-    <ClInclude Include="dbj_str_to_array.h" />
+    <ClCompile Include="dbj_str_remove.c">
+      <FileType>CppCode</FileType>
+    </ClCompile>
+    <ClCompile Include="dbj_str_remove_from_to.c">
+      <FileType>CppCode</FileType>
+    </ClCompile>
+    <ClInclude Include="dbj_str_sll.h" />
+    <ClCompile Include="dbj_str_to_array.c">
+      <FileType>CppCode</FileType>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="LICENSE" />
     <None Include="README.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="dbj_str_lib.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

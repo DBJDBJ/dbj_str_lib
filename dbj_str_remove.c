@@ -31,7 +31,7 @@ char * dbj_str_remove_all ( const char * str_, const char * chars_to_remove_ )
 	return dbj_strndup(vla_buff_, buff_p - vla_buff_);
 }
 
-static void dbj_test_str_remove() 
+void dbj_test_str_remove() 
 {
 char * specimen_ = "    ABRA    KA     DABRA    ";
 assert(0 == strcmp("ABRAKADABRA", dbj_str_remove_all(specimen_, " ")));

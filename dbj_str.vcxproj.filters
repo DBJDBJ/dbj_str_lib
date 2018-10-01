@@ -18,14 +18,14 @@
     <ClInclude Include="dbj.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="dbj_str_remove.h">
+    <ClInclude Include="dbj_str_sll.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="dbj_str_remove_from_to.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="dbj_str_remove.c">
+      <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="dbj_str_to_array.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="dbj_str_to_array.c">
+      <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -36,5 +36,11 @@
     <ClCompile Include="main.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="dbj_str_remove_from_to.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="dbj_str_lib.txt" />
   </ItemGroup>
 </Project>
