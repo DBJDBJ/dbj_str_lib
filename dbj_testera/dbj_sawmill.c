@@ -9,7 +9,7 @@ strdup and strndup are defined in POSIX compliant systems as :
 char *strdup(const char *str);
 char *strndup(const char *str, size_t len);
 */
-static char * dbj_strdup(const char *s)
+char * dbj_strdup(const char *s)
 {
 	char *d = (char *)malloc(sizeof(char) * (strlen(s) + 1));
 	if (d == NULL) { errno = ENOMEM; return NULL; }
@@ -82,7 +82,7 @@ static char * dbj_str_remove_all(const char * str_, const char * chars_to_remove
 	size_t str_size = strlen(str_);
 	/* on the stack */
 #ifndef _MSC_VER
-	char * vla_buff_ = (char *)alloca(str_size);
+	char * vla_buff_ = alloca(str_size);
 #else
 	char * vla_buff_ = (char *)_malloca(str_size);
 #endif
@@ -172,21 +172,19 @@ static void rekurzor(
 }
 
 /*
-remove all spaces found and remove potential
+remove potential
 prefix/suffix boundaries
 return the prepared text made on the heap
 */
 static char * prepare_to_sawmill(const char text_[], const char boundary_[])
 {
 	char * finaly_the_text_ = 0;
-	char * new_text_ = dbj_str_remove_all(text_, " ");
-	if (!new_text_) goto safe_exit;
 
 	char *text_front, *text_back;
 	int failure;
 	if ((failure = dbj_str_remove_prefix_suffix(
 		&text_front, &text_back,
-		new_text_, boundary_)))
+		text_, boundary_)))
 	{
 		printf("\n\ndbj_str_remove_prefix_suffix error message:%s\n", strerror(failure));
 		goto safe_exit;
@@ -194,7 +192,6 @@ static char * prepare_to_sawmill(const char text_[], const char boundary_[])
 	finaly_the_text_ = dbj_strndup(text_front, text_back - text_front); /* can be NULL */
 
 safe_exit:
-	if (new_text_) free(new_text_);
 	return finaly_the_text_; /* can be NULL */
 }
 

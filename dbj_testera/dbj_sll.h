@@ -33,7 +33,7 @@ extern "C" {
 
 #define DBJ_SLL_HEAD_KEY ((unsigned long)-1)
 
-	typedef struct dbj_sll_node {
+	/* typedef */ struct dbj_sll_node {
 		unsigned long key;
 		/*
 		 the above is usually the hash of the data bellow
@@ -42,7 +42,7 @@ extern "C" {
 		*/
 		char * data;
 		dbj_sll_node * next;
-	} dbj_sll_node;
+	} /*dbj_sll_node*/ ;
 
 	/********************************************************/
 	static dbj_sll_node * dbj_sll_node_new()
@@ -216,7 +216,7 @@ extern "C" {
 		printf("\n\n%p", node_);
 		printf("\n--------------------------------------");
 		printf("\nKey: %ld", node_->key);
-		printf("\nStr: %s", (node_->data ? node_->data : "NULL"));
+		printf("\nStr: [%s]", (node_->data ? node_->data : "NULL"));
 		printf("\nNext: %p", (node_->next ? node_->next : 0x0));
 		/* return false as a signal NOT to stop */
 		return false;

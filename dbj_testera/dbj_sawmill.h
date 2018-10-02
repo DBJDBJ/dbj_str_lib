@@ -42,7 +42,7 @@ extern "C" {
 #define dbj_thread_local __declspec(thread) static
 #define dbj_malloc(type, count) (type *)malloc( count * sizeof(type))
 #else
-#define dbj_thread_local __thread static
+#define dbj_thread_local static __thread 
 #define dbj_malloc(type, count) malloc( count * sizeof(type))
 #endif
 #ifndef size_t

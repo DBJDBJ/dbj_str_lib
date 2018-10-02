@@ -51,7 +51,6 @@ static int dbj_sll_to_chararr(char ** rezult)
 }
 
 static void chararr_print(const size_t rezult_size, const char * rezult[]) {
-	// print the result
 	printf("\n\n " PRODUCT_ID ", %3.3d rows\n", (int)rezult_size);
 	size_t j;
 	for (j = 0; j < rezult_size; ++j) {
@@ -62,7 +61,6 @@ static void chararr_print(const size_t rezult_size, const char * rezult[]) {
 }
 
 #ifdef DBJ_SAWMILL_TESTING
-extern const char large_text[];
 
 static void unit_test_dbj_sawmill(
 	const char text_[], 
@@ -80,22 +78,25 @@ static void unit_test_dbj_sawmill(
 	}
 	else {
 		int how_many_nodes = dbj_sll_count(sll_);
-		printf("\n\n" PRODUCT_ID " result dump\t%3.3d elements created\n", how_many_nodes );
+		printf("\n\nInput:[%s], boundary:[%s]\n", text_, boundary_ );
+		printf("\n" PRODUCT_ID " result dump\t%3.3d elements created\n", how_many_nodes );
 		dbj_sll_foreach(sll_, dbj_sll_node_dump_visitor);
 		printf("\n");
-		// remove the nodes, remove the head
+		/* remove the nodes, remove the head */
 		dbj_sll_erase_with_head(sll_);
 	}
 	system("pause");
 	return;
 }
 
+const char large_text[];
+
 static void test_dbj_sawmill() {
 	const  char * text_ = "one two one three one four one", *boundary = "one";
-	unit_test_dbj_sawmill(large_text, "next");
-	unit_test_dbj_sawmill(large_text, "Spaces");
-	unit_test_dbj_sawmill(large_text, "spaces");
-	unit_test_dbj_sawmill(large_text, "(");
+	unit_test_dbj_sawmill(text_, "one");
+	unit_test_dbj_sawmill(text_, "two");
+	unit_test_dbj_sawmill(text_, "wrong");
+	unit_test_dbj_sawmill(text_, "");
 }
 
 static const char large_text[] = {
