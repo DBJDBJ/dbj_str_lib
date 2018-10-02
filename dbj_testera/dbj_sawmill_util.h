@@ -15,9 +15,7 @@
 Note: while inside c++ all is in the dbj::clib namespace
 */
 #ifdef __cplusplus
-namespace dbj {
-	namespace clib {
-		extern "C" {
+extern "C" {
 #endif
 /* return 0 or errno */
 static int dbj_chararr_release(size_t count, char * rezult[]) {
@@ -67,7 +65,8 @@ static void chararr_print(const size_t rezult_size, const char * rezult[]) {
 extern const char large_text[];
 
 static void unit_test_dbj_sawmill(
-	const char text_[], const char boundary_[]
+	const char text_[], 
+	const char boundary_[]
 )
 {
 	/*
@@ -96,6 +95,7 @@ static void test_dbj_sawmill() {
 	unit_test_dbj_sawmill(large_text, "next");
 	unit_test_dbj_sawmill(large_text, "Spaces");
 	unit_test_dbj_sawmill(large_text, "spaces");
+	unit_test_dbj_sawmill(large_text, "(");
 }
 
 static const char large_text[] = {
@@ -121,7 +121,5 @@ static const char large_text[] = {
 
 #ifdef __cplusplus
 	} // extern "C"
-} // eof namespace clib 
-} // eof namespace dbj 
 #endif
 

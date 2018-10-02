@@ -33,9 +33,7 @@ http://clang.llvm.org/docs/UsersManual.html#controlling-diagnostics-in-system-he
 Note: while inside c++ all is in the dbj::clib namespace
 */
 #ifdef __cplusplus
-namespace dbj {
-	namespace clib {
-		extern "C" {
+extern "C" {
 #endif
 
 #pragma region dbj micro lib
@@ -111,8 +109,6 @@ int dbj_sawmill(
 #define dbj_pilana dbj_sawmill
 
 #ifdef __cplusplus
-	} // extern "C"
-} // eof namespace clib 
-} // eof namespace dbj 
+} // extern "C"
 #endif
 
