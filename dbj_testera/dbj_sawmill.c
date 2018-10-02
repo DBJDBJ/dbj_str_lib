@@ -40,6 +40,7 @@ static int dbj_substr_pos(const char str_[], const char sub_[]) {
 	return (pos != NULL ? pos - str_ : -1);
 }
 
+#if defined(_DEBUG) || defined(DEBUG)
 /* is boundary prefix to the input? */
 static bool is_dbj_str_prefix(const char str_[], const char pfx_[]) {
 	return (0 == dbj_substr_pos(str_, pfx_));
@@ -65,6 +66,8 @@ static bool is_dbj_str_suffix(const char str_[], const char sfx_[])
 	}
 	return false;
 }
+
+#endif /* #if defined(_DEBUG) || defined(DEBUG) */
 /*
 remove chars given in the string arg
 return the new string

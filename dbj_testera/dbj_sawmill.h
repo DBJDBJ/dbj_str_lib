@@ -21,6 +21,14 @@ gcc version 4.4.7
 #define PLATFORM "Linux"
 #endif
 
+#ifdef __clang__
+/*
+http://clang.llvm.org/docs/UsersManual.html#controlling-diagnostics-in-system-headers
+*/
+#pragma clang system_header
+#endif /* __clang__ */
+
+
 /*
 Note: while inside c++ all is in the dbj::clib namespace
 */
@@ -40,7 +48,9 @@ namespace dbj {
 #define dbj_malloc(type, count) malloc( count * sizeof(type))
 #endif
 #ifndef size_t
+#ifndef _WIN64
 typedef unsigned int size_t;
+#endif
 #endif
 #ifndef uchar_t
 typedef unsigned char uchar_t;
@@ -77,6 +87,7 @@ Usage contract:
 Function signature:
 
 int dbj_sawmill (
+	 dbj_sll_node * sll_ ,		-- the sll head 
 	 char text_ [],             -- input text
 	 char boundary_ []          -- what to cut out
 	 ) ;
@@ -88,9 +99,7 @@ On error:	Return the errno
 
  On sucess: Return 0
 
- Rezult:
-
- Is in the nodes of the DBJ Thread Global SLL
+ Rezult: Is in the nodes of the DBJ SLL
  
 */
 int dbj_sawmill(

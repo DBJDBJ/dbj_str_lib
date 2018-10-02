@@ -54,11 +54,11 @@ static int dbj_sll_to_chararr(char ** rezult)
 
 static void chararr_print(const size_t rezult_size, const char * rezult[]) {
 	// print the result
-	printf("\n\n " PRODUCT_ID ", %3.3d rows\n", rezult_size);
+	printf("\n\n " PRODUCT_ID ", %3.3d rows\n", (int)rezult_size);
 	size_t j;
 	for (j = 0; j < rezult_size; ++j) {
 		if (rezult[j]) {
-			printf("\n%3.3d %s", j, rezult[j]);
+			printf("\n%3.3d %s", (int)j, rezult[j]);
 		}
 	}
 }
@@ -71,7 +71,7 @@ static void unit_test_dbj_sawmill(
 )
 {
 	/*
-	dbj_sawmill leaves the result in the TLS DBJ SLL instance
+	dbj_sawmill leaves the result in the DBJ SLL instance
 	*/
 	dbj_sll_node * sll_ = dbj_sll_make_head();
 	assert(sll_);

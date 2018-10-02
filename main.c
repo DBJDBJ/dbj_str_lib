@@ -7,6 +7,5 @@ int main()
 	// test_dbj_sll();
 	//  test_dbj_str_sawmill();
 	test_dbj_sawmill();
-	system("pause");
 	return 0;
 }
