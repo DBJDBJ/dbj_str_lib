@@ -16,7 +16,7 @@
 #include <errno.h>
 #include <assert.h>
 
-// only static and extern variables can use thread local storage
+// only static extern variables can use thread local storage
 #ifdef _MSC_VER
 #define dbj_thread_local __declspec(thread) static
 #else
@@ -42,71 +42,6 @@ advanced DBJ lesson :)
 	int *p2 = dbj_calloc(1, int[4]); // same, naming the array type directly
 	int *p3 = dbj_calloc(4, *p3);    // same, without repeating the type name
 */
-
-
-/*
-Usage :
-int ** a = dbj_matrix_alloc(int, 5, 5);
-a[4][3] = 42;
-*/
-/*
-    DBJ ARRAY & MATRIX are handled with two structures and functions/macros
-	operating on them
-*/
-// keep array data and its length together
-typedef struct dbj_array_struct {
-	int    slot_size_; // size of type kept in the array 
-	int    count_;
-	void * data_;  // keep the data attached
-} dbj_array ;
-
-static void * dbj_array_data_alloc( unsigned int count_) {	
-	return dbj_calloc(void *, count_);
-}
-static void  dbj_array_free (dbj_array * p) { 
-	assert(p);
-	if (p) {
-		assert(p->data_);
-		if(p->data_) free(p->data_); 
-		free(p); p = 0;
-	}
-}
-// static dbj_array * dbj_array_make(void *source, int count, size_t value_size) {
-// p is dbj_array *
-#define dbj_array_make( p, source, count, type ) \
-do {\
-	assert(source);\
-    p = dbj_malloc(dbj_array, 1);\
-	if (p){\
-		p->slot_size_ = sizeof(type) ;\
-		p->count_ = count;\
-		type * source_copy  = dbj_calloc( type, count );\
-        for (int n = 0; n < count; ++n) { source_copy[n] = source[n]; }\
-		p->data_ = source_copy;\
-	}\
-	else {\
-		errno = ENOMEM; \
-	}\
-} while(0)
-
-#define dbj_array_cast(p_, type_) (type_*)p_->data_
-#define dbj_array_count(p_) p_->count_
-// get to the pointer to the value in the array
-// thus we can change it, not just use it
-#define dbj_array_val_ptr(p_, type, pos, rezult) \
-do { \
-assert(p_ && p_->data_); \
-rezult = (type*)p_->data_ ; \
-if ( (pos > 0) && (pos < p_->count_) ) { rezult = (type *)(rezult + pos) ; } \
-else { rezult = (type *)0; } \
-} while(0)
-/* 
-point to void * can not be plus incremented 
-above is horrible and necessary in C since we can not pass the type
-to the functions in C, the macro is the only way
-*/
-
-
 
 /*
 strdup and strndup are defined in POSIX compliant systems as :
@@ -189,20 +124,7 @@ static void dbj_dump_charr_arr(size_t size_, char *str, bool also_binary )
 	// printf("\n", str);
 }
 
-// the djb2 from: http://www.cse.yorku.ca/~oz/hash.html
-static unsigned long dbj_hash(unsigned char *str)
-{
-	unsigned long hash = 5381;
-	int c;
-
-	while (c = *str++)
-		hash = ((hash << 5) + hash) + c; /* hash * 33 + c */
-
-	return hash;
-}
-
 // the rest ///////////////////////////////////////////////////////////
-#include "dbj_str_sll.h"
 
 extern char * dbj_str_remove_all(const char * str_, const char * chars_to_remove_);
 extern void dbj_test_str_remove();
@@ -220,16 +142,4 @@ extern int dbj_str_remove_prefix_suffix(
 	const char boundary_[]
 );
 
-/*
-Return count of the rezulting array of strings
-*/
-extern unsigned int dbj_str_sawmill(
-	char		  * rezult [],		//--rezulting array of strings
-	const char    text_[],	//--input text
-	const char    boundary_[]	//--what to cut out
-);
-extern void test_dbj_str_sawmill();
-
-/// <summary>
 ///  EOF
-/// </summary>

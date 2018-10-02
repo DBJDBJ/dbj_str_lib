@@ -126,17 +126,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="dbj.h" />
-    <ClCompile Include="dbj_str_remove.c">
-      <FileType>CppCode</FileType>
-    </ClCompile>
-    <ClCompile Include="dbj_str_remove_from_to.c">
-      <FileType>CppCode</FileType>
-    </ClCompile>
-    <ClInclude Include="dbj_matrix.h" />
-    <ClInclude Include="dbj_str_sll.h" />
-    <ClCompile Include="dbj_str_sawmill.c">
-      <FileType>CppCode</FileType>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="LICENSE" />
@@ -144,6 +133,11 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="dbj_str_lib.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="dbj_testera\dbj_testera.vcxproj">
+      <Project>{4464dafa-5c74-4634-8335-e8a14128b594}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

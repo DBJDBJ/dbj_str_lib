@@ -1,14 +1,12 @@
 
-#include "dbj.h"
-
-
+#define DBJ_SAWMILL_TESTING
+#include "dbj_testera/dbj_sawmill_util.h"
 
 int main()
 {
 	// test_dbj_sll();
-	// test_dbj_str_remove_from_to();
-	// dbj_test_str_remove();
-	test_dbj_str_sawmill();
+	//  test_dbj_str_sawmill();
+	test_dbj_sawmill();
 	system("pause");
 	return 0;
 }
