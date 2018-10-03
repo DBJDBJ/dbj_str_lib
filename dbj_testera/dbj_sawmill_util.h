@@ -7,9 +7,9 @@
 #ifndef _CRT_SECURE_NO_WARNINGS
 #define _CRT_SECURE_NO_WARNINGS
 #endif
-// we do the above since we use MSVC UCRT *from* the clang c code
 #elif defined (__linux)
 #define PLATFORM "Linux"
+#define dbj_strerror strerror
 #endif
 /*
 Note: while inside c++ all is in the dbj::clib namespace
@@ -17,6 +17,17 @@ Note: while inside c++ all is in the dbj::clib namespace
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+	char * dbj_strerror(errno_t errno_) {
+#ifdef _MSC_VER
+		static char buffer[1024] ;
+		memset(buffer, 0, 1024);
+		strerror_s( buffer, 1024, errno_);
+		return buffer;
+#else
+		return strerror(errno_);
+#endif
+	}
 /* return 0 or errno */
 static int dbj_chararr_release(size_t count, char * rezult[]) {
 
@@ -74,7 +85,7 @@ static void unit_test_dbj_sawmill(
 	assert(sll_);
 	int failure = dbj_sawmill(sll_, text_, boundary_);
 	if (failure) {
-		printf("\n\n" PRODUCT_ID " error message:%s\n", strerror(errno));
+		printf("\n\n" PRODUCT_ID " error message:%s\n", dbj_strerror(errno));
 	}
 	else {
 		int how_many_nodes = dbj_sll_count(sll_);
@@ -89,7 +100,7 @@ static void unit_test_dbj_sawmill(
 	return;
 }
 
-const char large_text[];
+extern const char large_text[];
 
 static void test_dbj_sawmill() {
 	const  char * text_ = "one two one three one four one", *boundary = "one";

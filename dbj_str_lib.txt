@@ -17,6 +17,13 @@ Core of the processing is the (internal) function next_element()
 
 char * next_element ( char ** /*str*/ , char * /*brk*/ );
 
+char * str = "one two one three one four";
+char * brk = "one" ;
+
+while ( str != 0 ) {
+   char * element = next_element ( &str , brk );
+}
+
 Return is next element obtained 
 Processing stops when the first argument points to NULL.
 
