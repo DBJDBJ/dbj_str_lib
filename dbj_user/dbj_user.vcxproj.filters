@@ -18,12 +18,15 @@
     <ClInclude Include="pch.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="dbj_string.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="dbj_user.cpp">
+    <ClCompile Include="dbj_user.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -68,6 +68,7 @@ static bool is_dbj_str_suffix(const char str_[], const char sfx_[])
 }
 
 #endif /* #if defined(_DEBUG) || defined(DEBUG) */
+#if 0
 /*
 remove chars given in the string arg
 return the new string
@@ -101,7 +102,7 @@ static char * dbj_str_remove_all(const char * str_, const char * chars_to_remove
 	*buff_p = 0;
 	return dbj_strndup(vla_buff_, buff_p - vla_buff_);
 }
-
+#endif
 /*
 return 0 on OK, errno on error
 after new_front and new_back are moved if prefix/sufix is found
