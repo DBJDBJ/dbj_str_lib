@@ -227,7 +227,7 @@ extern "C" {
 
 	but SLL's simplicity more than compesates for this
 	SLL lists are short and todays machines are fast
-	so the algorithms are the one bellow are OK in normal situations
+	so the algorithms like the one bellow are OK in normal situations
 	*/
 	static bool dbj_sll_remove_tail_visitor(dbj_sll_node * node_)
 	{

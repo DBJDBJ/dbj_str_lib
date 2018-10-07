@@ -19,7 +19,7 @@ Concept 2: minimize the use of the string.h
 */
 
 typedef struct dbj_string {
-	bool full_free;
+	bool   full_free;
 	char * front;
 	char * back;
 } dbj_string;
@@ -27,28 +27,31 @@ typedef struct dbj_string {
 static dbj_string * dbj_string_null()
 {
 	dbj_string * pair_ = (dbj_string *)malloc(sizeof(dbj_string));
-	assert(pair_);
+	DBJ_ASSERT(pair_);
 	pair_->front = 0; pair_->back = 0; pair_->full_free = false; return pair_;
 }
 
 static bool dbj_valid_string (const dbj_string * str)
 {
 	if (!str) return false;
-	return ( str->front && str->back && ((str->back - str->front) > 0));
+	return ( 
+		str->front && str->back && ((str->back - str->front) > 0)
+		&& (DBJ_MAX_STRING_LENGTH > (str->back - str->front))
+		);
 }
 
 
 static void dbj_string_free(dbj_string * str)
 {
-	assert(str);
+	DBJ_ASSERT(str);
 	if (str->full_free) free((void*)str->front);
 	free(str);
 }
 
 static const size_t dbj_string_len(const dbj_string * str_)
 {
-	assert(str_);
-	assert(DBJ_MAX_STRING_LENGTH > (size_t)(str_->back - str_->front));
+	DBJ_ASSERT(str_);
+	DBJ_ASSERT(DBJ_MAX_STRING_LENGTH > (size_t)(str_->back - str_->front));
 	return (size_t)(str_->back - str_->front) ;
 }
 
@@ -58,14 +61,17 @@ make from const char *
 static dbj_string * 
 	dbj_string_make (const char * string_) 
 {
-	assert(DBJ_MAX_STRING_LENGTH > strlen(string_));
+	const size_t slen = strlen(string_);
+	DBJ_ASSERT(DBJ_MAX_STRING_LENGTH > slen);
 
 	dbj_string * pair_ = (dbj_string *)malloc(sizeof(dbj_string));
-	assert(pair_);
+	DBJ_ASSERT(pair_);
+	/* front not to be freed */
 	pair_->full_free = false ;
 	pair_->front = (char *)string_;
-	pair_->back  = (char *)string_ + strlen(string_) ;
-	assert((pair_->back - pair_->front) ==  strlen(string_));
+	/* NOTE! if string_ is empty, back == front */
+	pair_->back  = (char *)string_ + slen;
+	DBJ_ASSERT((pair_->back - pair_->front) == slen);
 	return pair_;
 }
 /*
@@ -73,14 +79,13 @@ front of the allocated dbj_string has to be freed
 */
 static dbj_string * dbj_string_alloc(size_t count)
 {
-	assert(DBJ_MAX_STRING_LENGTH > count);
+	DBJ_ASSERT(DBJ_MAX_STRING_LENGTH > count);
 	char * payload = (char*)calloc(count + 1, 1);
-	assert(payload);
+	DBJ_ASSERT(payload);
 	dbj_string * rez = dbj_string_make(payload);
-	// already marked full_free, but
 	// since we made it with the empty string 
 	// the back is pointing to the front 
-	// so we have to re-adjust it
+	// so we have to re-adjust it!
 	rez->back = rez->front + count;
 	return rez;
 }
@@ -160,10 +165,10 @@ or NULL , with errno set to the the error
 */
 static dbj_string *  dbj_to_subrange ( dbj_string * str_, dbj_string * sub_ )
 {
-	assert(str_ && sub_);
-	assert(dbj_string_len(str_) > 0);
-	assert(dbj_string_len(sub_) > 0);
-	assert(dbj_string_len(sub_) < dbj_string_len(str_));
+	DBJ_ASSERT(str_ && sub_);
+	DBJ_ASSERT(dbj_string_len(str_) > 0);
+	DBJ_ASSERT(dbj_string_len(sub_) > 0);
+	DBJ_ASSERT(dbj_string_len(sub_) < dbj_string_len(str_));
 
 	dbj_string * sub_range_ = 0;
 	
@@ -191,6 +196,7 @@ static dbj_string *  dbj_to_subrange ( dbj_string * str_, dbj_string * sub_ )
 				sub_range_->front = sub_start_location;
 				sub_range_->back  = sp ;
 				return sub_range_;
+				// marked for partial free-ing
 			}
 		}
 	}
@@ -215,7 +221,7 @@ static const size_t dbj_p_is_in_range(const char * p_, dbj_string * str_) {
 /*
 	is character c inside 
 	the string content
-	return the location or -1 if not found
+	return the location or DBJ_NPOS if not found
 */
 static const size_t dbj_c_is_in_range(const char c_, dbj_string * str_) 
 {
@@ -224,11 +230,11 @@ static const size_t dbj_c_is_in_range(const char c_, dbj_string * str_)
 	{
 		if ( c_ == *walker) return (size_t)(walker - str_->front) ;
 	}
-	return -1;
+	return DBJ_NPOS;
 }
 
 /*
-for example
+return append left and right of a sub_range
 */
 dbj_string * dbj_remove_substring
 (dbj_string * range, dbj_string * sub_range)
@@ -253,7 +259,7 @@ dbj_string * dbj_remove_substring
 	return rez;
 }
 
-static void dbj_string_fb_test() 
+static void dbj_string_test() 
 {
 	// specimen starts from 1
 	// thus sub(5,7) is '567'
@@ -277,7 +283,7 @@ static void dbj_string_fb_test()
 	/*
 	if subrange is made, that means sub is 
 	found to be a substring  of the string
-	by comparing the contents
+	by comparing the *contents*
 	*/
 	dbj_string * sub_range = dbj_to_subrange(o2z, sub);
 	DBJ_ASSERT( sub_range );
