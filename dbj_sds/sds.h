@@ -1,4 +1,5 @@
 #pragma once
+/* dbj.org 2018 OCT 08 Added */
 /* SDSLib 2.x -- A C dynamic strings library
  *
  * Copyright (c) 2018 Lynn Kirby <lynn@arrak.is>
@@ -43,13 +44,14 @@
 
 typedef char *sds;
 
+#ifdef _MSC_VER
+
 #pragma warning( push)
 #pragma warning( disable : 4018 )
 #pragma warning( disable : 4200 )
 #pragma warning( disable : 4267 )
 #pragma warning( disable : 4244 )
 
-#ifdef _MSC_VER
 #define PACK(decl) __pragma(pack(push, 1)) decl __pragma(pack(pop))
 #if defined(_WIN64)
 	typedef __int64 ssize_t;
@@ -287,6 +289,10 @@ void *sdsAllocPtr(sds s);
 void *sds_malloc(size_t size);
 void *sds_realloc(void *ptr, size_t size);
 void sds_free(void *ptr);
+
+#if defined(_DEBUG) || defined(DEBUG) 
+#define _SDS_TEST_
+#endif
 
 #ifdef _SDS_TEST_
 int sdsTest(int argc, char *argv[]);

@@ -36,7 +36,7 @@ static bool dbj_valid_string (const dbj_string * str)
 	if (!str) return false;
 	return ( 
 		str->front && str->back && ((str->back - str->front) > 0)
-		&& (DBJ_MAX_STRING_LENGTH > (str->back - str->front))
+		&& (DBJ_MAX_STRING_LENGTH > (size_t)(str->back - str->front))
 		);
 }
 

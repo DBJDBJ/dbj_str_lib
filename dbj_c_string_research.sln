@@ -7,7 +7,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dbj_sawmill", "dbj_testera\
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dbj_user", "dbj_user\dbj_user.vcxproj", "{0B654511-D4D8-4878-9D82-22B8C08C3EDA}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sds", "sds\sds.vcxproj", "{185CA630-F3CA-4599-B022-3DCE77094E1C}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dbj_sds", "dbj_sds\dbj_sds.vcxproj", "{185CA630-F3CA-4599-B022-3DCE77094E1C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
