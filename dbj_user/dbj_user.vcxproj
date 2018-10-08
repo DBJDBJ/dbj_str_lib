@@ -171,6 +171,9 @@
     <ProjectReference Include="..\dbj_testera\dbj_testera.vcxproj">
       <Project>{4464dafa-5c74-4634-8335-e8a14128b594}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\sds\sds.vcxproj">
+      <Project>{185ca630-f3ca-4599-b022-3dce77094e1c}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

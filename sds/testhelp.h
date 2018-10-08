@@ -1,3 +1,4 @@
+#pragma once
 /* This is a really minimal testing framework for C.
  *
  * Example:
