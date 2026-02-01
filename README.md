@@ -1,10 +1,12 @@
 # dbj_str_lib
 
 >[!WARNING]
->**ALPHA BUILD, DO NOT USE YET**
+>**R&D, DO NOT USE YET**
 
 ## dbj string manipulations in C
 
+>[!IMPORTANT]
+> Subfolders in here should not depend on each other, until further notice
 
 ---
 
