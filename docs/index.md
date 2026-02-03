@@ -1,5 +1,7 @@
 # DBJ STR R&D
 
+<!-- Rule: blank line before and after any HTML block if you want Markdown processed inside it. -->
+
 <details> 
 <summary>DBJ String 2026</summary>
   
