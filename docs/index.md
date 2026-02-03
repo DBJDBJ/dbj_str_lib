@@ -2,7 +2,7 @@
 
 <!-- Rule: blank line before and after any HTML block if you want Markdown processed inside it. -->
 
-![](ai_hero_or_vilain.ong)
+![](ai-herro-or-vilain.png)
 
 <details> 
 <summary>DBJ String 2026</summary>
